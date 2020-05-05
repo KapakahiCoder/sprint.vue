@@ -2,7 +2,7 @@
   <div id="app">
     <img alt="Vue logo" src="./assets/logo.png" />
     <h1>{{ title }}</h1>
-    <navbar />
+    <navbar v-on:changeViewToAllPhotos="currentView='allPhotos'" />
     <allPhotos
       v-if="currentView==='allPhotos'"
       :photos="photos"

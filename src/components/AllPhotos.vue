@@ -1,19 +1,30 @@
 <template>
   <div class="mainDivAllPhotos">
     <div class="allPhotosDiv" v-for="photo in photos" :key="photo.id">
-      <img @click="$emit('changeCurrentView')" class="allPhotos" :src="photo" alt="random" />
+      <img
+        @click="changeCurrentView(); sendPhoto(photo);"
+        class="allPhotos"
+        :src="photo"
+        alt="random"
+      />
     </div>
   </div>
 </template>
+
+
 
 <script>
 export default {
   name: "AllPhotos",
   props: ["photos"],
   methods: {
-    switchToSinglePhoto: function() {
-      // send clicked <img>'s src to SinglePhoto.vue
-      // tell parent App.vue, that data.currentView = "singlePhoto"
+    sendPhoto: function(image) {
+      console.log("INSIDE sendPhoto method");
+      console.log("this is image: ", image);
+      this.$emit("set-photo", image);
+    },
+    changeCurrentView: function() {
+      this.$emit("changeCurrentView");
     }
   },
   data() {

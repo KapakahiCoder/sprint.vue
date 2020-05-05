@@ -14,6 +14,7 @@ export default {
     allPhotos: function() {
       // DO SOMETHING TO CHANGE VIEW
       // TO ALL PHOTOS
+      this.$emit("changeViewToAllPhotos");
     }
   },
   components: {
