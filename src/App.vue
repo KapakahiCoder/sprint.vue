@@ -3,8 +3,12 @@
     <img alt="Vue logo" src="./assets/logo.png" />
     <h1>{{ title }}</h1>
     <navbar />
-    <allPhotos v-if="currentView==='allPhotos'" />
-    <singlePhoto v-else />
+    <allPhotos
+      v-if="currentView==='allPhotos'"
+      :photos="photos"
+      v-on:changeCurrentView="currentView='singlePhoto'"
+    />
+    <singlePhoto v-else :selectedPhoto="selectedPhoto" />
   </div>
 </template>
 
@@ -14,7 +18,6 @@ import AllPhotos from "./components/AllPhotos";
 import SinglePhoto from "./components/SinglePhoto";
 import { listObjects, getSingleObject } from "../utils/index.js";
 
-console.log("IS THIS WORKING????? Inside <script> of App.vue");
 export default {
   name: "App",
   components: {
@@ -25,35 +28,30 @@ export default {
   methods: {
     currentViewFunc: function(updateCurrentViewString) {
       this.currentView = updateCurrentViewString;
-    }
-  },
-  created() {
-    //  console.log("inside created()");
-    function getPhotos() {
+    },
+    getPhotos: function() {
       listObjects()
         .then(data => {
-          console.log("this is data: ", data);
           let arrayOfObjs = data;
-          console.log("this is arrayOfObjs BEFORE map: ", arrayOfObjs);
           arrayOfObjs = arrayOfObjs.map(obj => {
-            console.log("this is obj.Key", obj.Key);
             return getSingleObject(obj.Key);
           });
-          console.log("this is arrayOfObjs AFTER map:", arrayOfObjs);
           let longStrings = Promise.all(arrayOfObjs);
-          console.log("this is longStrings", longStrings);
           return longStrings;
         })
         .then(result => {
-          //  console.log("inside Promise.all().getSingleObject().then()");
-          // console.log("THIS IS res: ", res);
-          console.log("this is this.photos BEFORE reassigning:", this.photos);
-          console.log("this is result", result);
-          this.photos = result;
-          console.log("this.photos AFTER reassigning", this.photos);
+          let baseSixtyFourArr = result.map(strings => {
+            return `data:image/jpg;base64, ${strings}`;
+          });
+          return Promise.all(baseSixtyFourArr);
+        })
+        .then(longStrings => {
+          this.photos = longStrings;
         });
     }
-    getPhotos();
+  },
+  async created() {
+    await this.getPhotos();
   },
   data: function() {
     return {

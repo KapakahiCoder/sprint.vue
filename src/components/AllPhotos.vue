@@ -1,15 +1,36 @@
 <template>
-  <div />
+  <div class="mainDivAllPhotos">
+    <div class="allPhotosDiv" v-for="photo in photos" :key="photo.id">
+      <img @click="$emit('changeCurrentView')" class="allPhotos" :src="photo" alt="random" />
+    </div>
+  </div>
 </template>
-<!-- 
-1. get allPhotos using listObjects functions
-2. USE async/await OR promise/then to get the array of photo objects
-3. use getObjects to extract the superSuperSuperLong64BaseStrings
--->
+
 <script>
 export default {
-  name: "AllPhotos"
+  name: "AllPhotos",
+  props: ["photos"],
+  methods: {
+    switchToSinglePhoto: function() {
+      // send clicked <img>'s src to SinglePhoto.vue
+      // tell parent App.vue, that data.currentView = "singlePhoto"
+    }
+  },
+  data() {
+    return { placeholderData: "placeholderData from AllPhotos.vue" };
+  }
 };
 </script>
 
-<style></style>
+<style>
+.allPhotos {
+  width: 30%;
+}
+.allPhotosDiv {
+  border: 1px solid grey;
+  border-radius: 5px;
+  padding: 25px;
+
+  width: 30%;
+}
+</style>
